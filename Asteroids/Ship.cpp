@@ -64,19 +64,23 @@ void Ship::setPos(Vector2 pos)
 
 void Ship::updateAcceleration()
 {
-	if (GetMouseX() - position.x > 40 && IsMouseButtonDown(1)) {
+	if (GetMouseX() - position.x > 40 && IsMouseButtonDown(1)) 
+	{
 		if (acceleration < 1) acceleration += 0.04f;
 	}
-	if (position.x - GetMouseX() > 40 && IsMouseButtonDown(1)) {
+	if (position.x - GetMouseX() > 40 && IsMouseButtonDown(1)) 
+	{
 		if (acceleration < 1) acceleration += 0.04f;
 	}
-	if (GetMouseY() - position.y > 40 && IsMouseButtonDown(1)) {
+	if (GetMouseY() - position.y > 40 && IsMouseButtonDown(1)) 
+	{
 		if (acceleration < 1) acceleration += 0.04f;
 	}
-	if (position.y - GetMouseY() > 40 && IsMouseButtonDown(1)) {
+	if (position.y - GetMouseY() > 40 && IsMouseButtonDown(1)) 
+	{
 		if (acceleration < 1) acceleration += 0.04f;
 	}
-	if (acceleration > 0 && !IsMouseButtonDown(1))
+	else if (acceleration > 0)
 	{
 		if (acceleration > minimalAcceleration)
 		{

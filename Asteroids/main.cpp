@@ -20,13 +20,7 @@ struct Shoot {
     Color color;
 };
 
-struct Meteor {
-    Vector2 position;
-    Vector2 speed;
-    float radius;
-    bool active;
-    Color color;
-};
+
 
 
 const int screenWidth = 800;
@@ -46,8 +40,7 @@ float shipHeight = 0.0f;
 
 
 Shoot shoot[10] = { 0 };
-Meteor mediumMeteor[8] = { 0 };
-Meteor smallMeteor[16] = { 0 };
+
 
 int midMeteorsCount = 0;
 int smallMeteorsCount = 0;
@@ -64,7 +57,8 @@ void shootUpdate();
 void asteroidsUpdate();
 
 
-int main() {
+int main() 
+{
    
     
     InitWindow(screenWidth, screenHeight, "classic game: asteroids");
@@ -186,17 +180,14 @@ void UpdateGame() {
     if (!gameOver) {
         if (IsKeyPressed('P')) pause = !pause;
 
-        if (!pause) {
+        if (!pause) 
+        {
             
             
             updatePlayer();
             shootUpdate();
             asteroidsUpdate();
           
-           
-           
-           
-
             for (int i = 0; i < 4; i++) {
                 if (CheckCollisionCircles({ ship->getCollider().x,ship->getCollider().y }, ship->getCollider().z, bigAsteroids[i]->getPos(), bigAsteroids[i]->getRadius()) && bigAsteroids[i]->isActive()) gameOver = true;
             }
@@ -216,7 +207,8 @@ void UpdateGame() {
             {
                 if ((shoot[i].active)) 
                 {
-                    for (int a = 0; a < bigAsteroidsAmount; a++) {
+                    for (int a = 0; a < bigAsteroidsAmount; a++) 
+                    {
                         if (bigAsteroids[a]->isActive() && CheckCollisionCircles(shoot[i].position, shoot[i].radius, bigAsteroids[a]->getPos(), bigAsteroids[a]->getRadius())) 
                         {
                             bigAsteroids[a]->setActivity(false);
@@ -249,15 +241,19 @@ void UpdateGame() {
                         }
                     }
 
-                    for (int b = 0; b < mediumAsteroidsAmount; b++) {
-                        if (mediumAsteroids[b]->isActive() && CheckCollisionCircles(shoot[i].position, shoot[i].radius, mediumAsteroids[b]->getPos(), mediumAsteroids[b]->getRadius())) {
+                    for (int b = 0; b < mediumAsteroidsAmount; b++) 
+                    {
+                        if (mediumAsteroids[b]->isActive() && CheckCollisionCircles(shoot[i].position, shoot[i].radius, mediumAsteroids[b]->getPos(), mediumAsteroids[b]->getRadius())) 
+                        {
                             shoot[i].active = false;
                             
                             mediumAsteroids[b]->setActivity(false);
                             destroyedMeteorsCount++;
 
-                            for (int j = 0; j < 2; j++) {
-                                if (smallMeteorsCount % 2 == 0) {
+                            for (int j = 0; j < 2; j++) 
+                            {
+                                if (smallMeteorsCount % 2 == 0) 
+                                {
                                     smallAsteroids[smallMeteorsCount]->setPos({ mediumAsteroids[b]->getPos() });
                                     smallAsteroids[smallMeteorsCount]->setSpeed({ (mediumAsteroids[b]->getSpeed().x * 1.5f) * -1,(mediumAsteroids[b]->getSpeed().y * 1.5f) * -1 });
                                 }
@@ -270,13 +266,15 @@ void UpdateGame() {
                                 smallMeteorsCount++;
                             }
                             
-                            mediumMeteor[b].color = GREEN;
+                          
                             b = mediumAsteroidsAmount;
                         }
                     }
 
-                    for (int c = 0; c < smallAsteroidsAmount; c++) {
-                        if (smallAsteroids[c]->isActive() && CheckCollisionCircles(shoot[i].position, shoot[i].radius, smallAsteroids[c]->getPos(), smallAsteroids[c]->getRadius())) {
+                    for (int c = 0; c < smallAsteroidsAmount; c++)
+                    {
+                        if (smallAsteroids[c]->isActive() && CheckCollisionCircles(shoot[i].position, shoot[i].radius, smallAsteroids[c]->getPos(), smallAsteroids[c]->getRadius())) 
+                        {
                             shoot[i].active = false;
                            
                             smallAsteroids[c]->setActivity(false);
@@ -293,7 +291,8 @@ void UpdateGame() {
         if (destroyedMeteorsCount == 4 + 8 + 16) victory = true;
     }
     else {
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        {
             InitGame();
             gameOver = false;
         }
@@ -306,7 +305,8 @@ void DrawGame() {
 
     ClearBackground(BLACK);
 
-    if (!gameOver) {
+    if (!gameOver) 
+    {
         // Draw spaceship
         Vector2 v1 = { ship->getPos().x + sinf(ship->getRotation() * DEG2RAD) * (shipHeight), ship->getPos().y - cosf(ship->getRotation() * DEG2RAD) * (shipHeight) };
         Vector2 v2 = { ship->getPos().x - cosf(ship->getRotation() * DEG2RAD) * (20.0f / 2),  ship->getPos().y - sinf(ship->getRotation() * DEG2RAD) * (20.0f / 2) };
@@ -314,23 +314,27 @@ void DrawGame() {
         DrawTriangle(v1, v2, v3, MAROON);
 
         // Draw meteors
-        for (int i = 0; i < bigAsteroidsAmount; i++) {
+        for (int i = 0; i < bigAsteroidsAmount; i++) 
+        {
             if (bigAsteroids[i]->isActive()) DrawCircleV(bigAsteroids[i]->getPos(), bigAsteroids[i]->getRadius(), DARKGRAY);
          
         }
 
-        for (int i = 0; i < mediumAsteroidsAmount; i++) {
+        for (int i = 0; i < mediumAsteroidsAmount; i++) 
+        {
             if (mediumAsteroids[i]->isActive()) DrawCircleV(mediumAsteroids[i]->getPos(), mediumAsteroids[i]->getRadius(), GRAY);
            
         }
 
-        for (int i = 0; i < smallAsteroidsAmount; i++) {
+        for (int i = 0; i < smallAsteroidsAmount; i++)
+        {
             if (smallAsteroids[i]->isActive()) DrawCircleV(smallAsteroids[i]->getPos(), smallAsteroids[i]->getRadius(), WHITE);
            
         }
 
         // Draw shoot
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) 
+        {
             if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, WHITE);
         }
 
@@ -344,14 +348,16 @@ void DrawGame() {
 }
 
 // Unload game variables
-void UnloadGame() {
+void UnloadGame() 
+{
     // TODO: Unload all dynamic loaded data (textures, sounds, models...)
    /* delete[] bigAsteroids;
     delete ship;*/
 }
 
 // Update and Draw (one frame)
-void UpdateDrawFrame() {
+void UpdateDrawFrame() 
+{
     UpdateGame();
     DrawGame();
 }
@@ -366,9 +372,12 @@ void updatePlayer()
 }
 void shootUpdate()
 {
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        for (int i = 0; i < 10; i++) {
-            if (!shoot[i].active) {
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) 
+    {
+        for (int i = 0; i < 10; i++) 
+        {
+            if (!shoot[i].active) 
+            {
                 shoot[i].position = { ship->getPos().x + (float)sin(ship->getRotation() * DEG2RAD) * (shipHeight), ship->getPos().y - (float)cos(ship->getRotation() * DEG2RAD) * (shipHeight) };
                 shoot[i].active = true;
                 shoot[i].speed.x = 1.5 * sin(ship->getRotation() * DEG2RAD) * 6.0f;
@@ -387,16 +396,20 @@ void shootUpdate()
             shoot[i].position.y -= shoot[i].speed.y;
 
             // Collision logic: shoot vs walls
-            if (shoot[i].position.x > screenWidth + shoot[i].radius) {
+            if (shoot[i].position.x > screenWidth + shoot[i].radius) 
+            {
                 shoot[i].active = false;
             }
-            else if (shoot[i].position.x < 0 - shoot[i].radius) {
+            else if (shoot[i].position.x < 0 - shoot[i].radius)
+            {
                 shoot[i].active = false;
             }
-            if (shoot[i].position.y > screenHeight + shoot[i].radius) {
+            if (shoot[i].position.y > screenHeight + shoot[i].radius) 
+            {
                 shoot[i].active = false;
             }
-            else if (shoot[i].position.y < 0 - shoot[i].radius) {
+            else if (shoot[i].position.y < 0 - shoot[i].radius)
+            {
                 shoot[i].active = false;
             }
 
@@ -408,7 +421,8 @@ void shootUpdate()
 void asteroidsUpdate()
 {
     // Meteors logic: big meteors
-    for (int i = 0; i < bigAsteroidsAmount; i++) {
+    for (int i = 0; i < bigAsteroidsAmount; i++) 
+    {
         if (bigAsteroids[i]->isActive())
         {
             bigAsteroids[i]->move();
@@ -417,7 +431,8 @@ void asteroidsUpdate()
     }
 
     // Meteors logic: medium meteors
-    for (int i = 0; i < mediumAsteroidsAmount; i++) {
+    for (int i = 0; i < mediumAsteroidsAmount; i++) 
+    {
         if (mediumAsteroids[i]->isActive())
         {
             mediumAsteroids[i]->move();
@@ -426,7 +441,8 @@ void asteroidsUpdate()
     }
 
     // Meteors logic: small meteors
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) 
+    {
         if (smallAsteroids[i]->isActive())
         {
             smallAsteroids[i]->move();
