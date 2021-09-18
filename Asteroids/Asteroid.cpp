@@ -12,8 +12,8 @@ Asteroid::~Asteroid()
 
 void Asteroid::move()
 {
-	position.x += speed.x;
-	position.y += speed.y;
+	position.x += speed.x * GetFrameTime();
+	position.y += speed.y * GetFrameTime();
 	
 }
 

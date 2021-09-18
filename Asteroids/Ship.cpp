@@ -42,6 +42,11 @@ float Ship::getRotation()
 	return rotation;
 }
 
+float Ship::getShipHeight()
+{
+	return shipHeight;
+}
+
 
 
 float Ship::getAcceleration()

@@ -22,6 +22,7 @@ public:
 	Vector2 getPos();
 	Vector3 getCollider();
 	float getRotation();
+	float getShipHeight();
 
 	float getAcceleration();
 	void setPos(Vector2 pos);
