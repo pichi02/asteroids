@@ -26,6 +26,8 @@ public:
 
 	float getAcceleration();
 	void setPos(Vector2 pos);
+	void setRotation(float rot);
+	void resetAcceleration();
 	void updateAcceleration();
 	void updateRotation();
 	void updateCollider();

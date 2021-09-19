@@ -66,6 +66,16 @@ void Ship::setPos(Vector2 pos)
 	position = pos;
 }
 
+void Ship::setRotation(float rot)
+{
+	rotation = rot;
+}
+
+void Ship::resetAcceleration()
+{
+	acceleration = minimalAcceleration;
+}
+
 
 void Ship::updateAcceleration()
 {
@@ -113,8 +123,8 @@ void Ship::updateCollider()
 
 void Ship::updateSpeed()
 {
-	speed.x = sin(rotation * DEG2RAD) * 6.0f;
-	speed.y = cos(rotation * DEG2RAD) * 6.0f;
+	speed.x = (sin(rotation * DEG2RAD) * 250.0f)*GetFrameTime();
+	speed.y = (cos(rotation * DEG2RAD) * 250.0f)*GetFrameTime();
 }
 
 void Ship::checkWallCollision()

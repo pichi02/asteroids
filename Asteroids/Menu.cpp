@@ -19,6 +19,9 @@ int optionsButtonY;
 int quitButtonX;
 int quitButtonY;
 int quitButtonWidth;
+int playAgainButtonX;
+int victoryBackButtonX;
+static Music menuMusic;
 
 
 
@@ -90,8 +93,6 @@ void initMenu()
 	optionsButtonSizeX = 230;
 	buttonSizeY = 45;
 	rectangleMouseSize = 1;
-	mouseX = GetMouseX();
-	mouseY = GetMouseY();
 	playButtonX = GetScreenWidth() / 2 - playButtonSizeX / 2;
 	playButtonY = GetScreenHeight() * 5 / 10;
 	optionsButtonX = playButtonX - 20;
@@ -99,22 +100,30 @@ void initMenu()
 	quitButtonX = playButtonX + 10;
 	quitButtonY = GetScreenHeight() * 7 / 10;
 	quitButtonWidth = playButtonSizeX - 20;
+	playAgainButtonX = (GetScreenWidth() / 100) * 70;
+	victoryBackButtonX = (GetScreenWidth() / 100) * 30 - quitButtonWidth;
+	menuMusic = LoadMusicStream("resources/menu.ogg");
 }
+
 void updateMenu()
 {
+	PlayMusicStream(menuMusic);
+	UpdateMusicStream(menuMusic);
+	mouseX = GetMouseX();
+	mouseY = GetMouseY();
 
 	if (collision(mouseX, mouseY, rectangleMouseSize, playButtonX, playButtonY, playButtonSizeX, buttonSizeY) && IsMouseButtonPressed(0))
 	{
+		StopMusicStream(menuMusic);
 		currentScreen = GAMEPLAY;
 	}
 	else if (collision(mouseX, mouseY, rectangleMouseSize, optionsButtonX, optionsButtonY, optionsButtonSizeX, buttonSizeY) && IsMouseButtonPressed(0))
 	{
-		currentScreen = OPTIONS;
+		currentScreen = CREDITS;
 	}
 	else if (collision(mouseX, mouseY, rectangleMouseSize, quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 
-		WindowShouldClose();
 	}
 
 }
@@ -126,12 +135,86 @@ void drawMenu()
 	DrawRectangle(optionsButtonX, optionsButtonY, optionsButtonSizeX, buttonSizeY, RED);
 	DrawRectangle(playButtonX, playButtonY, playButtonSizeX, buttonSizeY, RED);
 	DrawRectangle(quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawText(TextFormat("ASTEROIDS"), titleX, titleY, 50, WHITE);
+	DrawText(TextFormat("ASTEROIDS"), (GetScreenWidth()/100)*32, titleY, 50, WHITE);
 	DrawText(TextFormat("START"), playButtonX, playButtonY, 50, WHITE);
-	DrawText(TextFormat("OPTIONS"), optionsButtonX, optionsButtonY, 50, WHITE);
+	DrawText(TextFormat("CREDITS"), optionsButtonX, optionsButtonY, 50, WHITE);
 	DrawText(TextFormat("Created by Lucas Pich"), 490, 910, 30, WHITE);
 	DrawText(TextFormat("QUIT"), quitButtonX + 18, quitButtonY, 50, WHITE);
 }
+
+void drawGameOverScreen()
+{
+	ClearBackground(BLACK);
+	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
+	DrawText(TextFormat("YOU LOSE"), (GetScreenWidth() / 100) * 33, titleY, 50, WHITE);
+	DrawRectangle(playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
+	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
+	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
+	DrawText(TextFormat("PLAY"), playAgainButtonX + 14, quitButtonY, 50, WHITE);
+}
+void updateGameOverScreen()
+
+{
+	mouseX = GetMouseX();
+	mouseY = GetMouseY();
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	{
+		currentScreen = GAMEPLAY;
+	}
+	else if(collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	{
+		currentScreen = MENU;
+	}
+
+}
+
+void drawVictoryScreen()
+{
+	ClearBackground(BLACK);
+	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
+	DrawText(TextFormat("YOU WIN"), (GetScreenWidth() / 100) * 33, titleY, 50, WHITE);
+	DrawRectangle(playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
+	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
+	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
+	DrawText(TextFormat("PLAY"), playAgainButtonX + 14, quitButtonY, 50, WHITE);
+}
+void updateVictoryScreen()
+
+{
+	mouseX = GetMouseX();
+	mouseY = GetMouseY();
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	{
+		currentScreen = GAMEPLAY;
+	}
+	else if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	{
+		currentScreen = MENU;
+	}
+
+}
+void drawCreditsScreen()
+{
+	ClearBackground(BLACK);
+	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
+	DrawText(TextFormat("CREDITS"), (GetScreenWidth() / 100) * 33, (GetScreenHeight()/100)*20, 50, WHITE);
+	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
+	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
+	
+}
+void updateCreditsScreen()
+
+{
+	mouseX = GetMouseX();
+	mouseY = GetMouseY();
+	
+	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	{
+		currentScreen = MENU;
+	}
+
+}
+
 bool collision(int mouseX, int mouseY, int mouseCollider, int ballX, int ballY, int ballSizeX, int ballSizeY)
 {
 	if (mouseX <= ballX + ballSizeX && ballX <= mouseX + mouseCollider && mouseY <= ballY + ballSizeY && ballY <= mouseY + mouseCollider)
@@ -142,4 +225,8 @@ bool collision(int mouseX, int mouseY, int mouseCollider, int ballX, int ballY, 
 	{
 		return false;
 	}
+}
+void updateMenuMusic()
+{
+	UpdateMusicStream(menuMusic);
 }

@@ -20,24 +20,12 @@ bool victory = false;
 
 
 
-
-
-
-
-
-
-
-
-
-void UnloadGame();
-
 Screens currentScreen = MENU;
 int main()
 {
 
 
 	InitWindow(screenWidth, screenHeight, "classic game: asteroids");
-
 	SetTargetFPS(60);
 	initValeus();
 	initMenu();
@@ -45,28 +33,7 @@ int main()
 	{
 
 		
-		/* if (currentScreen==GAMEPLAY)
-		 {
-
-			 do
-			 {
-				 UpdateDrawFrame();
-			 } while (!gameOver && !victory);
-
-
-		 }
-		 else if (currentScreen==GAMEOVER)
-		 {
-			 do
-			 {
-				 BeginDrawing();
-				 ClearBackground(BLACK);
-				 DrawText("VICTORY", screenWidth / 2 - MeasureText("VICTORY", 20) / 2, screenHeight / 2, 20, LIGHTGRAY);
-
-			 } while (true);
-			 EndDrawing();
-		 }*/
-
+		
 		switch (currentScreen)
 		{
 		case MENU:
@@ -80,8 +47,13 @@ int main()
 
 			break;
 		case GAMEOVER:
+			
+			updateGameOverScreen();
 			break;
-		case OPTIONS:
+		case VICTORY:
+			updateVictoryScreen();
+		case CREDITS:
+			updateCreditsScreen();
 			break;
 		default:
 			break;
@@ -103,8 +75,14 @@ int main()
 
 			break;
 		case GAMEOVER:
+			drawGameOverScreen();
 			break;
-		case OPTIONS:
+		case VICTORY:
+			drawVictoryScreen();
+			break;
+		case CREDITS:
+			drawCreditsScreen();
+			updateMenuMusic();
 			break;
 		default:
 			break;
@@ -112,7 +90,7 @@ int main()
 		EndDrawing();
 	}
 
-	UnloadGame();
+
 
 	CloseWindow();
 
@@ -126,13 +104,6 @@ int main()
 
 
 
-// Unload game variables
-void UnloadGame()
-{
-	// TODO: Unload all dynamic loaded data (textures, sounds, models...)
-   /* delete[] bigAsteroids;
-	delete ship;*/
-}
 
 
 

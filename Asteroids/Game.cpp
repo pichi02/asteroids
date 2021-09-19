@@ -14,7 +14,11 @@ int destroyedMeteorsCount = 0;
 int midMeteorsCount = 0;
 int smallMeteorsCount = 0;
 
+static Sound laser;
+Music gameplayMusic;
+
 bool pause = false;
+bool backToMenu = false;
 
 Ship* ship = new Ship;
 Asteroid bigAsteroids[bigAsteroidsAmount];
@@ -25,6 +29,11 @@ Shoot shoot[10] = { 0 };
 
 void initValeus()
 {
+	InitAudioDevice();
+	laser = LoadSound("resources/laser.wav");
+	gameplayMusic = LoadMusicStream("resources/gameplay.ogg");
+	
+
 	for (int i = 0; i < bigAsteroidsAmount; i++)
 	{
 		bigAsteroids[i] = Asteroid();
@@ -44,10 +53,13 @@ void initValeus()
 	victory = false;
 	pause = false;
 
-
+	//SetSoundVolume(laser, 10);
 
 
 	ship->setPos({ (float)GetScreenWidth ()/ 2, (float)GetScreenHeight() / 2 });
+	ship->setRotation(0.0f);
+	ship->resetAcceleration();
+	
 
 	destroyedMeteorsCount = 0;
 
@@ -108,10 +120,10 @@ void initValeus()
 static void gameplayUpdate()
 {
 	
-	/*if (!pause)
-	{*/
-
-
+	if (!pause)
+	{
+		PlayMusicStream(gameplayMusic);
+		UpdateMusicStream(gameplayMusic);
 		updatePlayer();
 		shootUpdate();
 		asteroidsUpdate();
@@ -137,12 +149,12 @@ static void gameplayUpdate()
 		collisionAndSplitAsteroids(smallAsteroids, smallAsteroids, smallAsteroidsAmount, smallMeteorsCount, shoot, true,smallAsteroidSpeed,mediumAsteroidSpeed);
 
 
-	/*}*/
+	}
 
 	if (destroyedMeteorsCount == smallAsteroidsAmount+mediumAsteroidsAmount+bigAsteroidsAmount)
 	{
 		victory = true;
-		currentScreen = MENU;
+		currentScreen = VICTORY;
 	}
 }
 //else {
@@ -164,7 +176,7 @@ void gameplayDraw()
 	Vector2 v1 = { ship->getPos().x + sinf(ship->getRotation() * DEG2RAD) * (ship->getShipHeight()), ship->getPos().y - cosf(ship->getRotation() * DEG2RAD) * (ship->getShipHeight()) };
 	Vector2 v2 = { ship->getPos().x - cosf(ship->getRotation() * DEG2RAD) * (20.0f / 2),  ship->getPos().y - sinf(ship->getRotation() * DEG2RAD) * (20.0f / 2) };
 	Vector2 v3 = { ship->getPos().x + cosf(ship->getRotation() * DEG2RAD) * (20.0f / 2),  ship->getPos().y + sinf(ship->getRotation() * DEG2RAD) * (20.0f / 2) };
-	DrawTriangle(v1, v2, v3, MAROON);
+	DrawTriangle(v1, v2, v3, BLUE);
 
 	// Draw meteors
 	for (int i = 0; i < bigAsteroidsAmount; i++)
@@ -190,6 +202,7 @@ void gameplayDraw()
 	{
 		if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, WHITE);
 	}
+	DrawText("press M to back to menu", 10, 10, 20, WHITE);
 
 
 
@@ -226,6 +239,7 @@ void shootUpdate()
 {
 	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
 	{
+		PlaySound(laser);
 		for (int i = 0; i < 10; i++)
 		{
 			if (!shoot[i].active)
@@ -322,11 +336,15 @@ void collisionAndSplitAsteroids(Asteroid biggerSizeAsteroids[], Asteroid smaller
 						{
 							if (smallerSizeCount % 2 == 0) {
 								smallerSizeAsteroids[smallerSizeCount].setPos({ biggerSizeAsteroids[a].getPos() });
-								smallerSizeAsteroids[smallerSizeCount].setSpeed({ (biggerSizeAsteroids[a].getSpeed().x * 1.5f) * -1,(biggerSizeAsteroids[a].getSpeed().y * 1.5f) * -1 });
+								smallerSizeAsteroids[smallerSizeCount].setSpeed({ (biggerSizeAsteroids[a].getSpeed().x * 1.2f) * -1,(biggerSizeAsteroids[a].getSpeed().y * 1.2f) * -1 });
+								if (smallerSizeAsteroids[smallerSizeCount].getSpeed().x < biggerAsteroidSpeed && smallerSizeAsteroids[smallerSizeCount].getSpeed().y < biggerAsteroidSpeed)
+								{
+									smallerSizeAsteroids[smallerSizeCount].setSpeed({ smallerAsteroidSpeed*-1, smallerAsteroidSpeed*-1 });
+								}
 							}
 							else {
 								smallerSizeAsteroids[smallerSizeCount].setPos({ biggerSizeAsteroids[a].getPos() });
-								smallerSizeAsteroids[smallerSizeCount].setSpeed({ (biggerSizeAsteroids[a].getSpeed().x * 1.5f ,biggerSizeAsteroids[a].getSpeed().y * 1.5f) });
+								smallerSizeAsteroids[smallerSizeCount].setSpeed({ (biggerSizeAsteroids[a].getSpeed().x * 1.2f ,biggerSizeAsteroids[a].getSpeed().y * 1.2f) });
 								if (smallerSizeAsteroids[smallerSizeCount].getSpeed().x <biggerAsteroidSpeed && smallerSizeAsteroids[smallerSizeCount].getSpeed().y<biggerAsteroidSpeed )
 								{
 									smallerSizeAsteroids[smallerSizeCount].setSpeed({ smallerAsteroidSpeed, smallerAsteroidSpeed });
@@ -347,11 +365,19 @@ void collisionAndSplitAsteroids(Asteroid biggerSizeAsteroids[], Asteroid smaller
 }
 void updateFrame()
 {
+	backToMenu = false;
 	if (IsKeyPressed('P')) pause = !pause;
+	if (IsKeyPressed('M')) backToMenu = true;;
+	if (backToMenu)
+	{
+		resetValeus();
+		currentScreen = MENU;
+	}
 		gameplayUpdate();
 		if (gameOver)
 		{
-			currentScreen = MENU;
+			StopMusicStream(gameplayMusic);
+			currentScreen = GAMEOVER;
 			resetValeus();
 		}
 
