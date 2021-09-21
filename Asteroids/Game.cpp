@@ -219,8 +219,8 @@ void gameplayDraw()
 	}
 	DrawText("press M to back to menu", 10, 10, 15, WHITE);
 	DrawText("press P to back to pause", 570, 10, 15, WHITE);
-	DrawText("LEFT CLICK to speed up", 10, 425, 15, WHITE);
-	DrawText("RIGHT CLICK to shoot", 580, 425, 15, WHITE);
+	DrawText("RIGHT CLICK to speed up", 10, 425, 15, WHITE);
+	DrawText("LEFT CLICK to shoot", 580, 425, 15, WHITE);
 
 
 
