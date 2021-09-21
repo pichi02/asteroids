@@ -15,3 +15,4 @@ void updateVictoryScreen();
 void drawCreditsScreen();
 void updateCreditsScreen();
 void updateMenuMusic();
+bool getQuit();

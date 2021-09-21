@@ -7,7 +7,7 @@ Ship::Ship()
 	position = {(float) GetScreenWidth() / 2 , (float)(GetScreenHeight() / 2 - shipHeight / 2 )};
 	rotation = 0;
 	
-	acceleration = minimalAcceleration;
+	/*acceleration = minimalAcceleration;*/
 	
 	
 }
@@ -56,8 +56,34 @@ float Ship::getAcceleration()
 
 void Ship::move()
 {
-	position.x += (speed.x * acceleration);
-	position.y -= (speed.y * acceleration);
+	/*position.x += (speed.x * acceleration.x);
+	position.y -= (speed.y * acceleration.y);*/
+	direction.x = GetMousePosition().x - position.x;
+	direction.y = GetMousePosition().y - position.y;
+
+	if (Vector2Length(Vector2Subtract(GetMousePosition(), position)) > 60.0f) {
+		rotation = Vector2Angle(position, GetMousePosition()) + 90;
+	}
+
+
+
+	if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON)) {
+		acceleration.x += direction.x / (sqrt((direction.x * direction.x) + direction.y * direction.y));
+		acceleration.y += direction.y / (sqrt((direction.x * direction.x) + direction.y * direction.y));
+	}
+
+	position.x += acceleration.x * GetFrameTime() * 5;
+	position.y += acceleration.y * GetFrameTime() * 5;
+}
+
+void Ship::setAcceleration(Vector2 acc)
+{
+	acceleration = acc;
+}
+
+void Ship::setDirection(Vector2 dir)
+{
+	direction = dir;
 }
 
 
@@ -73,13 +99,13 @@ void Ship::setRotation(float rot)
 
 void Ship::resetAcceleration()
 {
-	acceleration = minimalAcceleration;
+	/*acceleration = minimalAcceleration;*/
 }
 
 
 void Ship::updateAcceleration()
 {
-	if (GetMouseX() - position.x > 40 && IsMouseButtonDown(1)) 
+	/*if (GetMouseX() - position.x > 40 && IsMouseButtonDown(1)) 
 	{
 		if (acceleration < 1) acceleration += 0.04f;
 	}
@@ -94,26 +120,19 @@ void Ship::updateAcceleration()
 	if (position.y - GetMouseY() > 40 && IsMouseButtonDown(1)) 
 	{
 		if (acceleration < 1) acceleration += 0.04f;
-	}
-	else if (acceleration > 0)
-	{
-		if (acceleration > minimalAcceleration)
-		{
-			acceleration -= 0.01f;
-		}
-
-	}
+	}*/
+	
 }
 
 void Ship::updateRotation()
 {
-	if (IsMouseButtonDown(1))
+	/*if (IsMouseButtonDown(1))
 	{
 		if (Vector2Length(Vector2Subtract(GetMousePosition(), position)) > 40)
 		{
 			rotation = Vector2Angle(position, GetMousePosition()) + 90;
 		}
-	}
+	}*/
 }
 
 void Ship::updateCollider()
@@ -123,8 +142,8 @@ void Ship::updateCollider()
 
 void Ship::updateSpeed()
 {
-	speed.x = (sin(rotation * DEG2RAD) * 250.0f)*GetFrameTime();
-	speed.y = (cos(rotation * DEG2RAD) * 250.0f)*GetFrameTime();
+	/*speed.x = (sin(rotation * DEG2RAD) * 250.0f)*GetFrameTime();
+	speed.y = (cos(rotation * DEG2RAD) * 250.0f)*GetFrameTime();*/
 }
 
 void Ship::checkWallCollision()

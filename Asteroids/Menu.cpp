@@ -21,7 +21,12 @@ int quitButtonY;
 int quitButtonWidth;
 int playAgainButtonX;
 int victoryBackButtonX;
+int backMenuButtonWidth;
+bool quit;
 static Music menuMusic;
+Texture2D menuBackgroundTexture;
+Image menuImage;
+
 
 
 
@@ -86,23 +91,27 @@ static Music menuMusic;
 //}
 void initMenu()
 {
-	
+	quit = false;
 	titleX = (GetScreenWidth() / 100) * 25;
 	titleY = (GetScreenHeight() / 10) * 3;
-	playButtonSizeX = 180;
-	optionsButtonSizeX = 230;
+	playButtonSizeX = 135;
+	optionsButtonSizeX = 180;
 	buttonSizeY = 45;
 	rectangleMouseSize = 1;
-	playButtonX = GetScreenWidth() / 2 - playButtonSizeX / 2;
-	playButtonY = GetScreenHeight() * 5 / 10;
+	playButtonX = (GetScreenWidth() / 100) *42;
+	playButtonY = GetScreenHeight() * 4 / 10;
 	optionsButtonX = playButtonX - 20;
 	optionsButtonY = GetScreenHeight() * 6 / 10;
-	quitButtonX = playButtonX + 10;
-	quitButtonY = GetScreenHeight() * 7 / 10;
-	quitButtonWidth = playButtonSizeX - 20;
+	quitButtonX = (GetScreenWidth()/100)*45;
+	quitButtonY = GetScreenHeight() * 8 / 10;
+	quitButtonWidth = 90;
+	backMenuButtonWidth = 115;
 	playAgainButtonX = (GetScreenWidth() / 100) * 70;
 	victoryBackButtonX = (GetScreenWidth() / 100) * 30 - quitButtonWidth;
 	menuMusic = LoadMusicStream("resources/menu.ogg");
+	menuImage = LoadImage("resources/background.png");
+	menuBackgroundTexture = LoadTextureFromImage(menuImage);
+	
 }
 
 void updateMenu()
@@ -123,45 +132,90 @@ void updateMenu()
 	}
 	else if (collision(mouseX, mouseY, rectangleMouseSize, quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
-
+		UnloadImage(menuImage);
+		UnloadMusicStream(menuMusic);
+		
+		quit = true;
 	}
 
 }
 void drawMenu()
 {
+	
 	ClearBackground(BLACK);
+	DrawTextureEx(menuBackgroundTexture, { 0,0 }, 0, (GetScreenWidth() * 1.0f) / GetScreenWidth(), WHITE);
 	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
-	/*DrawTextureRec(menuBackground, frameRecMenu, menuBackgroundPosition, RAYWHITE);*/
-	DrawRectangle(optionsButtonX, optionsButtonY, optionsButtonSizeX, buttonSizeY, RED);
-	DrawRectangle(playButtonX, playButtonY, playButtonSizeX, buttonSizeY, RED);
-	DrawRectangle(quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawText(TextFormat("ASTEROIDS"), (GetScreenWidth()/100)*32, titleY, 50, WHITE);
-	DrawText(TextFormat("START"), playButtonX, playButtonY, 50, WHITE);
-	DrawText(TextFormat("CREDITS"), optionsButtonX, optionsButtonY, 50, WHITE);
+	///*DrawTextureRec(menuBackground, frameRecMenu, menuBackgroundPosition, RAYWHITE);*/
+	//DrawRectangle(optionsButtonX, optionsButtonY, optionsButtonSizeX, buttonSizeY, BLUE);
+	//DrawRectangle(playButtonX, playButtonY, playButtonSizeX, buttonSizeY, BLUE);
+	//DrawRectangle(quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY, BLUE);
+	
+	DrawText(TextFormat("LUCASTEROIDS"), (GetScreenWidth()/100)*21, (GetScreenHeight()/100)*20, 60, BLUE);
+	if (collision(mouseX, mouseY, rectangleMouseSize, playButtonX, playButtonY, playButtonSizeX, buttonSizeY))
+	{
+		DrawText(TextFormat("start"), playButtonX, playButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("start"), playButtonX, playButtonY, 50, WHITE);
+	}
+	if (collision(mouseX, mouseY, rectangleMouseSize, optionsButtonX, optionsButtonY, optionsButtonSizeX, buttonSizeY))
+	{
+		DrawText(TextFormat("credits"), optionsButtonX, optionsButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("credits"), optionsButtonX, optionsButtonY, 50, WHITE);
+	}
+	if (collision(mouseX, mouseY, rectangleMouseSize, quitButtonX, quitButtonY, quitButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("quit"), quitButtonX , quitButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("quit"), quitButtonX , quitButtonY, 50, WHITE);
+	}
+
 	DrawText(TextFormat("Created by Lucas Pich"), 490, 910, 30, WHITE);
-	DrawText(TextFormat("QUIT"), quitButtonX + 18, quitButtonY, 50, WHITE);
+
 }
 
 void drawGameOverScreen()
 {
 	ClearBackground(BLACK);
+	DrawTextureEx(menuBackgroundTexture, { 0,0 }, 0, (GetScreenWidth() * 1.0f) / GetScreenWidth(), WHITE);
 	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
 	DrawText(TextFormat("YOU LOSE"), (GetScreenWidth() / 100) * 33, titleY, 50, WHITE);
-	DrawRectangle(playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
-	DrawText(TextFormat("PLAY"), playAgainButtonX + 14, quitButtonY, 50, WHITE);
+	/*DrawRectangle(playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY, BLUE);
+	DrawRectangle(victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY, BLUE);*/
+	
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("play"), playAgainButtonX + 5, quitButtonY - 5, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("play"), playAgainButtonX + 5, quitButtonY - 5, 50, WHITE);
+	}
+	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, WHITE);
+	}
 }
 void updateGameOverScreen()
 
 {
 	mouseX = GetMouseX();
 	mouseY = GetMouseY();
-	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 		currentScreen = GAMEPLAY;
 	}
-	else if(collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	else if(collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 		currentScreen = MENU;
 	}
@@ -171,23 +225,40 @@ void updateGameOverScreen()
 void drawVictoryScreen()
 {
 	ClearBackground(BLACK);
+	DrawTextureEx(menuBackgroundTexture, { 0,0 }, 0, (GetScreenWidth() * 1.0f) / GetScreenWidth(), WHITE);
 	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
-	DrawText(TextFormat("YOU WIN"), (GetScreenWidth() / 100) * 33, titleY, 50, WHITE);
-	DrawRectangle(playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
-	DrawText(TextFormat("PLAY"), playAgainButtonX + 14, quitButtonY, 50, WHITE);
+	DrawText(TextFormat("YOU WIN :D"), (GetScreenWidth() / 100) * 33, titleY, 50, WHITE);
+	/*DrawRectangle(playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY, BLUE);
+	DrawRectangle(victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY, BLUE);*/
+	
+	
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("play"), playAgainButtonX + 5, quitButtonY - 5, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("play"), playAgainButtonX + 5, quitButtonY - 5, 50, WHITE);
+	}
+	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, WHITE);
+	}
 }
 void updateVictoryScreen()
 
 {
 	mouseX = GetMouseX();
 	mouseY = GetMouseY();
-	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	if (collision(mouseX, mouseY, rectangleMouseSize, playAgainButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 		currentScreen = GAMEPLAY;
 	}
-	else if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	else if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 		currentScreen = MENU;
 	}
@@ -196,10 +267,21 @@ void updateVictoryScreen()
 void drawCreditsScreen()
 {
 	ClearBackground(BLACK);
+	DrawTextureEx(menuBackgroundTexture, { 0,0 }, 0, (GetScreenWidth() * 1.0f) / GetScreenWidth(), WHITE);
 	DrawRectangle(mouseX, mouseY, rectangleMouseSize, rectangleMouseSize, BLACK);
-	DrawText(TextFormat("CREDITS"), (GetScreenWidth() / 100) * 33, (GetScreenHeight()/100)*20, 50, WHITE);
-	DrawRectangle(victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY, RED);
-	DrawText(TextFormat("MENU"), victoryBackButtonX + 14, quitButtonY, 50, WHITE);
+	DrawText(TextFormat("CREDITS"), (GetScreenWidth() / 100) * 35, (GetScreenHeight()/100)*15, 50, WHITE);
+	DrawText(TextFormat("background by Calinou (https://opengameart.org/content/space-skybox-1)"), (GetScreenWidth() / 100) * 6, (GetScreenHeight() / 100) * 35, 19, WHITE);
+	DrawText(TextFormat("UI Audio by CodeManu (https://opengameart.org/content/magic-space)"), (GetScreenWidth() / 100) * 8, (GetScreenHeight() / 100) * 42, 19, WHITE);
+	DrawText(TextFormat("Gameplay Audio by maxstack (https://opengameart.org/content/through-space)"), (GetScreenWidth() / 100) * 5, (GetScreenHeight() / 100) * 49, 19, WHITE);
+	DrawText(TextFormat("Shoot sound by Kenney (https://www.kenney.nl/assets/sci-fi-sounds)"), (GetScreenWidth() / 100) * 8, (GetScreenHeight() / 100) * 56, 19, WHITE);
+	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY))
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, GRAY);
+	}
+	else
+	{
+		DrawText(TextFormat("menu"), victoryBackButtonX, quitButtonY, 50, WHITE);
+	}
 	
 }
 void updateCreditsScreen()
@@ -208,7 +290,7 @@ void updateCreditsScreen()
 	mouseX = GetMouseX();
 	mouseY = GetMouseY();
 	
-	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, quitButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
+	if (collision(mouseX, mouseY, rectangleMouseSize, victoryBackButtonX, quitButtonY, backMenuButtonWidth, buttonSizeY) && IsMouseButtonPressed(0))
 	{
 		currentScreen = MENU;
 	}
@@ -229,4 +311,8 @@ bool collision(int mouseX, int mouseY, int mouseCollider, int ballX, int ballY, 
 void updateMenuMusic()
 {
 	UpdateMusicStream(menuMusic);
+}
+bool getQuit() 
+{
+	return quit;
 }

@@ -6,11 +6,13 @@ class Ship
 private:
 	int width;
 	int height;
-	Vector2 position;
-	float acceleration;
+
 	float rotation;
+	Vector2 position;
 	Vector3 collider;
 	Vector2 speed;
+	Vector2 acceleration;
+	Vector2 direction;
 	float shipHeight = (20.0f / 2) / tanf(20 * DEG2RAD);
 	const float minimalAcceleration = 0.2f;
 	
@@ -34,6 +36,8 @@ public:
 	void updateSpeed();
 	void checkWallCollision();
 	void move();
+	void setAcceleration(Vector2 acc);
+	void setDirection(Vector2 dir);
 
 	
 };

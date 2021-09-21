@@ -7,11 +7,6 @@
 #include"main.h"
 #include"Game.h"
 
-
-
-
-
-
 const int screenWidth = 800;
 const int screenHeight = 450;
 
@@ -25,64 +20,40 @@ int main()
 {
 
 
-	InitWindow(screenWidth, screenHeight, "classic game: asteroids");
+	InitWindow(screenWidth, screenHeight, "LUCASTEROIDS");
 	SetTargetFPS(60);
 	initValeus();
 	initMenu();
-	while (!WindowShouldClose())
+	while (!WindowShouldClose()&&!getQuit())
 	{
-
-		
-		
-		switch (currentScreen)
-		{
-		case MENU:
-
-			updateMenu();
-
-			break;
-		case GAMEPLAY:
-			
-			updateFrame();
-
-			break;
-		case GAMEOVER:
-			
-			updateGameOverScreen();
-			break;
-		case VICTORY:
-			updateVictoryScreen();
-		case CREDITS:
-			updateCreditsScreen();
-			break;
-		default:
-			break;
-		}
-
 
 		BeginDrawing();
 		switch (currentScreen)
 		{
 		case MENU:
 
-
+			updateMenu();
 			drawMenu();
 
 			break;
 		case GAMEPLAY:
-
+			updateFrame();
 			gameplayDraw();
 
 			break;
 		case GAMEOVER:
+			updateGameOverScreen();
 			drawGameOverScreen();
 			break;
 		case VICTORY:
+			updateVictoryScreen();
 			drawVictoryScreen();
 			break;
 		case CREDITS:
-			drawCreditsScreen();
+			updateCreditsScreen();
 			updateMenuMusic();
+			drawCreditsScreen();
+			
 			break;
 		default:
 			break;

@@ -16,7 +16,6 @@ int smallMeteorsCount = 0;
 
 static Sound laser;
 Music gameplayMusic;
-
 bool pause = false;
 bool backToMenu = false;
 
@@ -25,6 +24,11 @@ Asteroid bigAsteroids[bigAsteroidsAmount];
 Asteroid mediumAsteroids[mediumAsteroidsAmount];
 Asteroid smallAsteroids[smallAsteroidsAmount];
 Shoot shoot[10] = { 0 };
+
+Texture2D gameplayBackgroundTexture;
+Image gameplayImage;
+Rectangle frameRecGameplayBackground;
+Vector2 gameplayBackgroundPosition;
 
 
 void initValeus()
@@ -59,6 +63,8 @@ void initValeus()
 	ship->setPos({ (float)GetScreenWidth ()/ 2, (float)GetScreenHeight() / 2 });
 	ship->setRotation(0.0f);
 	ship->resetAcceleration();
+	ship->setDirection({ 0,0 });
+	ship->setAcceleration({ 0,0 });
 	
 
 	destroyedMeteorsCount = 0;
@@ -115,6 +121,13 @@ void initValeus()
 
 	midMeteorsCount = 0;
 	smallMeteorsCount = 0;
+
+	gameplayBackgroundTexture.height = GetScreenHeight();
+	gameplayBackgroundTexture.width = GetScreenWidth();
+	frameRecGameplayBackground = { 0.0f, 0.0f, (float)gameplayBackgroundTexture.width, (float)gameplayBackgroundTexture.height };
+	gameplayBackgroundPosition = { 0,0 };
+	gameplayImage = LoadImage("resources/background.png");
+	gameplayBackgroundTexture = LoadTextureFromImage(gameplayImage);
 }
 
 static void gameplayUpdate()
@@ -155,6 +168,8 @@ static void gameplayUpdate()
 	{
 		victory = true;
 		currentScreen = VICTORY;
+		resetValeus();
+		
 	}
 }
 //else {
@@ -171,7 +186,7 @@ void gameplayDraw()
 
 	ClearBackground(BLACK);
 
-
+	DrawTextureEx(gameplayBackgroundTexture, { 0,0 }, 0, (GetScreenWidth() * 1.0f) / GetScreenWidth(), WHITE);
 	// Draw spaceship
 	Vector2 v1 = { ship->getPos().x + sinf(ship->getRotation() * DEG2RAD) * (ship->getShipHeight()), ship->getPos().y - cosf(ship->getRotation() * DEG2RAD) * (ship->getShipHeight()) };
 	Vector2 v2 = { ship->getPos().x - cosf(ship->getRotation() * DEG2RAD) * (20.0f / 2),  ship->getPos().y - sinf(ship->getRotation() * DEG2RAD) * (20.0f / 2) };
@@ -181,7 +196,7 @@ void gameplayDraw()
 	// Draw meteors
 	for (int i = 0; i < bigAsteroidsAmount; i++)
 	{
-		if (bigAsteroids[i].isActive()) DrawCircleV(bigAsteroids[i].getPos(), bigAsteroids[i].getRadius(), DARKGRAY);
+		if (bigAsteroids[i].isActive()) DrawCircleV(bigAsteroids[i].getPos(), bigAsteroids[i].getRadius(), BROWN);
 
 	}
 
@@ -193,7 +208,7 @@ void gameplayDraw()
 
 	for (int i = 0; i < smallAsteroidsAmount; i++)
 	{
-		if (smallAsteroids[i].isActive()) DrawCircleV(smallAsteroids[i].getPos(), smallAsteroids[i].getRadius(), WHITE);
+		if (smallAsteroids[i].isActive()) DrawCircleV(smallAsteroids[i].getPos(), smallAsteroids[i].getRadius(), DARKGRAY);
 
 	}
 
@@ -202,7 +217,10 @@ void gameplayDraw()
 	{
 		if (shoot[i].active) DrawCircleV(shoot[i].position, shoot[i].radius, WHITE);
 	}
-	DrawText("press M to back to menu", 10, 10, 20, WHITE);
+	DrawText("press M to back to menu", 10, 10, 15, WHITE);
+	DrawText("press P to back to pause", 570, 10, 15, WHITE);
+	DrawText("LEFT CLICK to speed up", 10, 425, 15, WHITE);
+	DrawText("RIGHT CLICK to shoot", 580, 425, 15, WHITE);
 
 
 
